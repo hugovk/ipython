@@ -49,9 +49,6 @@ from .ipunittest import ipdoctest, ipdocstring
 # numpy.testing.decorators, we expose all of it here.
 from IPython.external.decorators import *
 
-# For onlyif_cmd_exists decorator
-from IPython.utils.py3compat import which
-
 #-----------------------------------------------------------------------------
 # Classes and functions
 #-----------------------------------------------------------------------------
