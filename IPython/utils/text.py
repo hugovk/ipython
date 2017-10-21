@@ -19,8 +19,6 @@ except ImportError:
     # for Python 3.3
     from pathlib2 import Path
 
-from IPython.utils import py3compat
-
 # datetime.strftime date format for ipython
 if sys.platform == 'win32':
     date_format = "%B %d, %Y"
@@ -415,7 +413,7 @@ def wrap_paragraphs(text, ncols=80):
 
 def long_substr(data):
     """Return the longest common substring in a list of strings.
-    
+
     Credit: http://stackoverflow.com/questions/2892931/longest-common-substring-from-more-than-two-strings-python
     """
     substr = ''
@@ -457,7 +455,7 @@ def strip_email_quotes(text):
 
     So if any line has no quote marks ('>') , then none are stripped from any
     of them ::
-    
+
         In [5]: strip_email_quotes('> > text\\n> > more\\nlast different')
         Out[5]: '> > text\\n> > more\\nlast different'
     """
@@ -479,7 +477,7 @@ def strip_email_quotes(text):
 def strip_ansi(source):
     """
     Remove ansi escape codes from text.
-    
+
     Parameters
     ----------
     source : str
@@ -490,11 +488,11 @@ def strip_ansi(source):
 
 class EvalFormatter(Formatter):
     """A String Formatter that allows evaluation of simple expressions.
-    
+
     Note that this version interprets a : as specifying a format string (as per
     standard string formatting), so if slicing is required, you must explicitly
     create a slice.
-    
+
     This is to be used in templating cases, such as the parallel batch
     script templates, where simple arithmetic on arguments is useful.
 
@@ -519,13 +517,13 @@ class EvalFormatter(Formatter):
 
 class FullEvalFormatter(Formatter):
     """A String Formatter that allows evaluation of simple expressions.
-    
+
     Any time a format key is not found in the kwargs,
     it will be tried as an expression in the kwargs namespace.
-    
+
     Note that this version allows slicing using [1:2], so you cannot specify
     a format string. Use :class:`EvalFormatter` to permit format strings.
-    
+
     Examples
     --------
     ::
@@ -570,7 +568,7 @@ class FullEvalFormatter(Formatter):
                 # format the object and append to the result
                 result.append(self.format_field(obj, ''))
 
-        return ''.join(py3compat.cast_unicode(s) for s in result)
+        return ''.join(s for s in result)
 
 
 class DollarFormatter(FullEvalFormatter):
@@ -596,7 +594,7 @@ class DollarFormatter(FullEvalFormatter):
     def parse(self, fmt_string):
         for literal_txt, field_name, format_spec, conversion \
                     in Formatter.parse(self, fmt_string):
-            
+
             # Find $foo patterns in the literal text.
             continue_from = 0
             txt = ""
@@ -609,7 +607,7 @@ class DollarFormatter(FullEvalFormatter):
                     yield (txt + new_txt, new_field, "", None)
                     txt = ""
                 continue_from = m.end()
-            
+
             # Re-yield the {foo} style pattern
             yield (txt + literal_txt[continue_from:], field_name, format_spec, conversion)
 
