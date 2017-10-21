@@ -19,7 +19,6 @@ from IPython.core.magic import (Magics, magics_class, line_magic,
                                 register_line_cell_magic)
 from decorator import decorator
 from IPython import get_ipython
-from IPython.testing.decorators import skipif
 from IPython.testing.tools import AssertPrints, AssertNotPrints
 from IPython.utils.path import compress_user
 

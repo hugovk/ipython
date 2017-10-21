@@ -21,9 +21,6 @@ Authors:
 #-----------------------------------------------------------------------------
 
 import re
-import sys
-
-from IPython.utils.encoding import get_stream_enc
 
 #-----------------------------------------------------------------------------
 # Main function

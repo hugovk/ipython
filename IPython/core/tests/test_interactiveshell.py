@@ -17,7 +17,6 @@ import sys
 import tempfile
 import unittest
 from unittest import mock
-from io import StringIO
 
 from os.path import join
 
