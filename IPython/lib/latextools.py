@@ -15,14 +15,13 @@ from IPython.utils.process import find_cmd, FindCmdError
 from traitlets.config import get_config
 from traitlets.config.configurable import SingletonConfigurable
 from traitlets import List, Bool, Unicode
-from IPython.utils.py3compat import cast_unicode
 
 
 class LaTeXTool(SingletonConfigurable):
     """An object to store configuration of the LaTeX tool."""
     def _config_default(self):
         return get_config()
-    
+
     backends = List(
         Unicode(), ["matplotlib", "dvipng"],
         help="Preferred backend to draw LaTeX math equations. "
@@ -72,7 +71,6 @@ def latex_to_png(s, encode=False, backend=None, wrap=False):
     None is returned when the backend cannot be used.
 
     """
-    s = cast_unicode(s)
     allowed_backends = LaTeXTool.instance().backends
     if backend is None:
         backend = allowed_backends[0]

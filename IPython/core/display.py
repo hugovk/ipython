@@ -14,7 +14,6 @@ import sys
 import warnings
 from copy import deepcopy
 
-from IPython.utils.py3compat import cast_unicode
 from IPython.testing.skipdoctest import skip_doctest
 
 __all__ = ['display', 'display_pretty', 'display_html', 'display_markdown',
@@ -267,12 +266,12 @@ def display(*objs, include=None, exclude=None, metadata=None, transient=None, di
 
     """
     from IPython.core.interactiveshell import InteractiveShell
-    
+
     if not InteractiveShell.initialized():
         # Directly print objects.
         print(*objs)
         return
-    
+
     raw = kwargs.pop('raw', False)
     if transient is None:
         transient = {}
@@ -352,10 +351,10 @@ class DisplayHandle(object):
 
     def display(self, obj, **kwargs):
         """Make a new display with my id, updating existing instances.
-        
+
         Parameters
         ----------
-        
+
         obj:
             object to display
         **kwargs:
@@ -365,10 +364,10 @@ class DisplayHandle(object):
 
     def update(self, obj, **kwargs):
         """Update existing displays with my id
-        
+
         Parameters
         ----------
-        
+
         obj:
             object to display
         **kwargs:
@@ -723,18 +722,17 @@ class SVG(DisplayObject):
             # fallback on the input, trust the user
             # but this is probably an error.
             pass
-        svg = cast_unicode(svg)
         self._data = svg
-    
+
     def _repr_svg_(self):
         return self._data_and_metadata()
 
 class ProgressBar(DisplayObject):
-    """Progressbar supports displaying a progressbar like element 
+    """Progressbar supports displaying a progressbar like element
     """
     def __init__(self, total):
         """Creates a new progressbar
-        
+
         Parameters
         ----------
         total : int
@@ -862,7 +860,7 @@ class GeoJSON(JSON):
 
     Scalar types (None, number, string) are not allowed, only dict containers.
     """
-    
+
     def __init__(self, *args, **kwargs):
         """Create a GeoJSON display object given raw data.
 
@@ -911,7 +909,7 @@ class GeoJSON(JSON):
         the GeoJSON object.
 
         """
-        
+
         super(GeoJSON, self).__init__(*args, **kwargs)
 
 
@@ -1143,7 +1141,7 @@ class Image(DisplayObject):
         self.height = height
         self.retina = retina
         self.unconfined = unconfined
-        super(Image, self).__init__(data=data, url=url, filename=filename, 
+        super(Image, self).__init__(data=data, url=url, filename=filename,
                 metadata=metadata)
 
         if self.width is None and self.metadata.get('width', {}):

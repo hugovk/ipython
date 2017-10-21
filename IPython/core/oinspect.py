@@ -21,7 +21,7 @@ import os
 from textwrap import dedent
 import types
 import io as stdlib_io
-from itertools import zip_longest 
+from itertools import zip_longest
 
 # IPython's own
 from IPython.core import page
@@ -35,7 +35,6 @@ from IPython.utils.path import compress_user
 from IPython.utils.text import indent
 from IPython.utils.wildcard import list_namespace
 from IPython.utils.coloransi import TermColors, ColorScheme, ColorSchemeTable
-from IPython.utils.py3compat import cast_unicode
 from IPython.utils.colorable import Colorable
 from IPython.utils.decorators import undoc
 
@@ -85,29 +84,6 @@ def object_info(**kw):
     return infodict
 
 
-def get_encoding(obj):
-    """Get encoding for python source file defining obj
-
-    Returns None if obj is not defined in a sourcefile.
-    """
-    ofile = find_file(obj)
-    # run contents of file through pager starting at line where the object
-    # is defined, as long as the file isn't binary and is actually on the
-    # filesystem.
-    if ofile is None:
-        return None
-    elif ofile.endswith(('.so', '.dll', '.pyd')):
-        return None
-    elif not os.path.isfile(ofile):
-        return None
-    else:
-        # Print only text files, not extension binaries.  Note that
-        # getsourcelines returns lineno with 1-offset and page() uses
-        # 0-offset, so we must adjust.
-        with stdlib_io.open(ofile, 'rb') as buffer:   # Tweaked to use io.open for Python 2
-            encoding, lines = openpy.detect_encoding(buffer.readline)
-        return encoding
-
 def getdoc(obj):
     """Stable wrapper around inspect.getdoc.
 
@@ -128,8 +104,7 @@ def getdoc(obj):
             return inspect.cleandoc(ds)
     try:
         docstr = inspect.getdoc(obj)
-        encoding = get_encoding(obj)
-        return py3compat.cast_unicode(docstr, encoding=encoding)
+        return docstr
     except Exception:
         # Harden against an inspect failure, which can occur with
         # extensions modules.
@@ -161,20 +136,15 @@ def getsource(obj, oname=''):
         for attrname in ['fget', 'fset', 'fdel']:
             fn = getattr(obj, attrname)
             if fn is not None:
-                encoding = get_encoding(fn)
                 oname_prefix = ('%s.' % oname) if oname else ''
-                sources.append(cast_unicode(
-                    ''.join(('# ', oname_prefix, attrname)),
-                    encoding=encoding))
+                sources.append(''.join(('# ', oname_prefix, attrname)))
                 if inspect.isfunction(fn):
                     sources.append(dedent(getsource(fn)))
                 else:
                     # Default str/repr only prints function name,
                     # pretty.pretty prints module name too.
-                    sources.append(cast_unicode(
-                        '%s%s = %s\n' % (
-                            oname_prefix, attrname, pretty(fn)),
-                        encoding=encoding))
+                    sources.append('%s%s = %s\n' % (
+                            oname_prefix, attrname, pretty(fn)))
         if sources:
             return '\n'.join(sources)
         else:
@@ -196,8 +166,7 @@ def getsource(obj, oname=''):
                 except TypeError:
                     return None
 
-        encoding = get_encoding(obj)
-        return cast_unicode(src, encoding=encoding)
+        return src
 
 
 def is_simple_callable(obj):
@@ -209,7 +178,7 @@ def is_simple_callable(obj):
 def getargspec(obj):
     """Wrapper around :func:`inspect.getfullargspec` on Python 3, and
     :func:inspect.getargspec` on Python 2.
-    
+
     In addition to functions and methods, this can also handle objects with a
     ``__call__`` attribute.
     """
@@ -313,7 +282,7 @@ def find_file(obj):
                 pass
     except:
         pass
-    return cast_unicode(fname)
+    return fname
 
 
 def find_source_lines(obj):
@@ -333,7 +302,7 @@ def find_source_lines(obj):
       The line number where the object definition starts.
     """
     obj = _get_wrapped(obj)
-    
+
     try:
         try:
             lineno = inspect.getsourcelines(obj)[1]
@@ -369,7 +338,7 @@ class Inspector(Colorable):
         exception is suppressed."""
         try:
             hdef = oname + str(signature(obj))
-            return cast_unicode(hdef)
+            return hdef
         except:
             return None
 
@@ -528,7 +497,7 @@ class Inspector(Colorable):
                 title = header(title + ':') + '\n'
             else:
                 title = header((title + ':').ljust(title_width))
-            out.append(cast_unicode(title) + cast_unicode(content))
+            out.append(title + content)
         return "\n".join(out)
 
     def _mime_format(self, text, formatter=None):
@@ -547,7 +516,6 @@ class Inspector(Colorable):
         Formatters returning strings are supported but this behavior is deprecated.
 
         """
-        text = cast_unicode(text)
         defaults = {
             'text/plain': text,
             'text/html': '<pre>' + text + '</pre>'
@@ -588,7 +556,7 @@ class Inspector(Colorable):
 
     def _get_info(self, obj, oname='', formatter=None, info=None, detail_level=0):
         """Retrieve an info dict and format it.
-        
+
         Parameters
         ==========
 
@@ -659,7 +627,7 @@ class Inspector(Colorable):
 
             append_field(_mime, 'Length', 'length')
             append_field(_mime, 'File', 'file')
-            
+
             # Source or docstring, depending on detail level and whether
             # source found.
             if detail_level > 0 and info['source']:
@@ -670,7 +638,7 @@ class Inspector(Colorable):
             append_field(_mime, 'Class docstring', 'class_docstring', formatter)
             append_field(_mime, 'Init docstring', 'init_docstring', formatter)
             append_field(_mime, 'Call docstring', 'call_docstring', formatter)
-            
+
 
         return self.format_mime(_mime)
 

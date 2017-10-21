@@ -17,10 +17,6 @@ def encode(u, encoding=None):
     return u.encode(encoding, "replace")
 
 
-def cast_unicode(s, encoding=None):
-    return s
-
-
 def cast_bytes(s, encoding=None):
     return encode(s, encoding)
 

@@ -380,8 +380,6 @@ def _format_traceback_lines(lnum, index, lines, Colors, lvals=None,  _line_forma
     i = lnum - index
 
     for line in lines:
-        line = py3compat.cast_unicode(line)
-
         new_line, err = _line_format(line, 'str')
         if not err: line = new_line
 
@@ -686,7 +684,7 @@ class ListTB(TBTools):
         have_filedata = False
         Colors = self.Colors
         list = []
-        stype = py3compat.cast_unicode(Colors.excName + etype.__name__ + Colors.Normal)
+        stype = Colors.excName + etype.__name__ + Colors.Normal
         if value is None:
             # Not sure if this can still happen in Python 2.6 and above
             list.append(stype + '\n')
@@ -702,10 +700,11 @@ class ListTB(TBTools):
                     textline = ''
                 list.append('%s  File %s"%s"%s, line %s%s%s\n' % \
                             (Colors.normalEm,
-                             Colors.filenameEm, py3compat.cast_unicode(value.filename), Colors.normalEm,
+                             Colors.filenameEm, value.filename,
+                             Colors.normalEm,
                              Colors.linenoEm, lineno, Colors.Normal  ))
                 if textline == '':
-                    textline = py3compat.cast_unicode(value.text, "utf-8")
+                    textline = value.text
 
                 if textline is not None:
                     i = 0
@@ -770,7 +769,7 @@ class ListTB(TBTools):
     def _some_str(self, value):
         # Lifted from traceback.py
         try:
-            return py3compat.cast_unicode(str(value))
+            return str(value)
         except:
             return u'<unprintable %s object>' % type(value).__name__
 
@@ -867,7 +866,6 @@ class VerboseTB(TBTools):
                     # strange entries...
                     pass
 
-        file = py3compat.cast_unicode(file, util_path.fs_encoding)
         link = tpl_link % util_path.compress_user(file)
         args, varargs, varkw, locals = inspect.getargvalues(frame)
 
@@ -1051,7 +1049,7 @@ class VerboseTB(TBTools):
             etype_str, evalue_str = map(str, (etype, evalue))
         # ... and format it
         return ['%s%s%s: %s' % (colors.excName, etype_str,
-                                colorsnormal, py3compat.cast_unicode(evalue_str))]
+                                colorsnormal, evalue_str)]
 
     def format_exception_as_a_whole(self, etype, evalue, etb, number_of_lines_of_context, tb_offset):
         """Formats the header, traceback and exception message for a single exception.

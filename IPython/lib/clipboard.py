@@ -4,7 +4,6 @@
 import subprocess
 
 from IPython.core.error import TryNext
-import IPython.utils.py3compat as py3compat
 
 class ClipboardEmpty(ValueError):
     pass
@@ -25,7 +24,6 @@ def win32_clipboard_get():
     except (TypeError, win32clipboard.error):
         try:
             text = win32clipboard.GetClipboardData(win32clipboard.CF_TEXT)
-            text = py3compat.cast_unicode(text, py3compat.DEFAULT_ENCODING)
         except (TypeError, win32clipboard.error):
             raise ClipboardEmpty
     finally:
@@ -40,7 +38,6 @@ def osx_clipboard_get():
     text, stderr = p.communicate()
     # Text comes in with old Mac \r line endings. Change them to \n.
     text = text.replace(b'\r', b'\n')
-    text = py3compat.cast_unicode(text, py3compat.DEFAULT_ENCODING)
     return text
 
 def tkinter_clipboard_get():
@@ -51,10 +48,10 @@ def tkinter_clipboard_get():
     implementation that uses that toolkit.
     """
     try:
-        from tkinter import Tk, TclError 
+        from tkinter import Tk, TclError
     except ImportError:
         raise TryNext("Getting text from the clipboard on this platform requires tkinter.")
-        
+
     root = Tk()
     root.withdraw()
     try:
@@ -63,7 +60,6 @@ def tkinter_clipboard_get():
         raise ClipboardEmpty
     finally:
         root.destroy()
-    text = py3compat.cast_unicode(text, py3compat.DEFAULT_ENCODING)
     return text
 
 

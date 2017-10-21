@@ -22,8 +22,6 @@ from IPython.utils.decorators import undoc
 # Code
 #-----------------------------------------------------------------------------
 
-fs_encoding = sys.getfilesystemencoding()
-
 def _writable_dir(path):
     """Whether `path` is a directory, to which the user has write access."""
     return os.path.isdir(path) and os.access(path, os.W_OK)
@@ -210,7 +208,7 @@ def get_home_dir(require_writable=False):
             pass
 
     if (not require_writable) or _writable_dir(homedir):
-        return py3compat.cast_unicode(homedir, fs_encoding)
+        return homedir
     else:
         raise HomeDirError('%s is not a writable dir, '
                 'set $HOME environment variable to override' % homedir)
@@ -228,7 +226,7 @@ def get_xdg_dir():
         # use ~/.config if empty OR not set
         xdg = env.get("XDG_CONFIG_HOME", None) or os.path.join(get_home_dir(), '.config')
         if xdg and _writable_dir(xdg):
-            return py3compat.cast_unicode(xdg, fs_encoding)
+            return xdg
 
     return None
 
@@ -246,7 +244,7 @@ def get_xdg_cache_dir():
         # use ~/.cache if empty OR not set
         xdg = env.get("XDG_CACHE_HOME", None) or os.path.join(get_home_dir(), '.cache')
         if xdg and _writable_dir(xdg):
-            return py3compat.cast_unicode(xdg, fs_encoding)
+            return xdg
 
     return None
 
