@@ -34,7 +34,7 @@ from nose.plugins import Plugin
 from nose.util import safe_str
 
 from IPython import version_info
-from IPython.utils.py3compat import bytes_to_str
+from IPython.utils.py3compat import decode
 from IPython.utils.importstring import import_item
 from IPython.testing.plugin.ipdoctest import IPythonDoctest
 from IPython.external.decorators import KnownFailure, knownfailureif
@@ -154,15 +154,15 @@ class TestSection(object):
         self.excludes = []
         self.dependencies = []
         self.enabled = True
-    
+
     def exclude(self, module):
         if not module.startswith('IPython'):
             module = self.includes[0] + "." + module
         self.excludes.append(module.replace('.', os.sep))
-    
+
     def requires(self, *packages):
         self.dependencies.extend(packages)
-    
+
     @property
     def will_run(self):
         return self.enabled and all(have[p] for p in self.dependencies)
@@ -242,7 +242,7 @@ class ExclusionPlugin(Plugin):
     """
     name = 'exclusions'
     score = 3000  # Should come before any other plugins
-    
+
     def __init__(self, exclude_patterns=None):
         """
         Parameters
@@ -257,12 +257,12 @@ class ExclusionPlugin(Plugin):
 
     def options(self, parser, env=os.environ):
         Plugin.options(self, parser, env)
-    
+
     def configure(self, options, config):
         Plugin.configure(self, options, config)
         # Override nose trying to disable plugin.
         self.enabled = True
-        
+
     def wantFile(self, filename):
         """Return whether the given filename should be scanned for tests.
         """
@@ -299,8 +299,8 @@ class StreamCapturer(Thread):
             with self.buffer_lock:
                 self.buffer.write(chunk)
             if self.echo:
-                sys.stdout.write(bytes_to_str(chunk))
-    
+                sys.stdout.write(decode(chunk))
+
         os.close(self.readfd)
         os.close(self.writefd)
 
@@ -344,17 +344,17 @@ class SubprocessStreamCapturePlugin(Plugin):
             return os.open(os.devnull, os.O_WRONLY)
         else:
             return sys.__stdout__.fileno()
-    
+
     def configure(self, options, config):
         Plugin.configure(self, options, config)
         # Override nose trying to disable plugin.
         if self.destination == 'capture':
             self.enabled = True
-    
+
     def startTest(self, test):
         # Reset log capture
         self.stream_capturer.reset_buffer()
-    
+
     def formatFailure(self, test, err):
         # Show output
         ec, ev, tb = err
@@ -367,9 +367,9 @@ class SubprocessStreamCapturePlugin(Plugin):
             return ec, '\n'.join(out), tb
 
         return err
-    
+
     formatError = formatFailure
-    
+
     def finalize(self, result):
         self.stream_capturer.halt()
 
@@ -394,7 +394,7 @@ def run_iptest():
         sys.argv[1:2] = section.includes
     else:
         section = TestSection(arg1, includes=[arg1])
-        
+
 
     argv = sys.argv + [ '--detailed-errors',  # extra info in tracebacks
                         # We add --exe because of setuptools' imbecility (it
@@ -421,7 +421,7 @@ def run_iptest():
 
     plugins = [ ExclusionPlugin(section.excludes), KnownFailure(),
                SubprocessStreamCapturePlugin() ]
-    
+
     # we still have some vestigial doctests in core
     if (section.name.startswith(('core', 'IPython.core', 'IPython.utils'))):
         plugins.append(IPythonDoctest())
@@ -431,11 +431,11 @@ def run_iptest():
             '--ipdoctest-extension=txt',
         ])
 
-    
+
     # Use working directory set by parent process (see iptestcontroller)
     if 'IPTEST_WORKING_DIR' in os.environ:
         os.chdir(os.environ['IPTEST_WORKING_DIR'])
-    
+
     # We need a global ipython running in this process, but the special
     # in-process group spawns its own IPython kernels, so for *that* group we
     # must avoid also opening the global one (otherwise there's a conflict of

@@ -24,7 +24,7 @@ from .iptest import (
     have, test_group_names as py_test_group_names, test_sections, StreamCapturer,
 )
 from IPython.utils.path import compress_user
-from IPython.utils.py3compat import bytes_to_str
+from IPython.utils.py3compat import decode
 from IPython.utils.sysinfo import get_sys_info
 from IPython.utils.tempdir import TemporaryDirectory
 
@@ -54,7 +54,7 @@ class TestController(object):
 
     def setup(self):
         """Create temporary directories etc.
-        
+
         This is only called when we know the test group will be run. Things
         created here may be cleaned up by self.cleanup().
         """
@@ -82,11 +82,11 @@ class TestController(object):
 
     def print_extra_info(self):
         """Print extra information about this test run.
-        
+
         If we're running in parallel and showing the concise view, this is only
         called if the test group fails. Otherwise, it's called before the test
         group is started.
-        
+
         The base implementation does nothing, but it can be overridden by
         subclasses.
         """
@@ -230,11 +230,11 @@ def prepare_controllers(options):
 
 def do_run(controller, buffer_output=True):
     """Setup and run a test controller.
-    
+
     If buffer_output is True, no output is displayed, to avoid it appearing
     interleaved. In this case, the caller is responsible for displaying test
     output on failure.
-    
+
     Returns
     -------
     controller : TestController
@@ -371,7 +371,7 @@ def run_iptestall(options):
                 print(justify('Test group: ' + controller.section, res_string))
                 if res:
                     controller.print_extra_info()
-                    print(bytes_to_str(controller.stdout))
+                    print(decode(controller.stdout))
                     failed.append(controller)
                     if res == -signal.SIGINT:
                         print("Interrupted")

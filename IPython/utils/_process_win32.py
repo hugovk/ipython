@@ -152,7 +152,7 @@ def getoutput(cmd):
 
     if out is None:
         out = b''
-    return py3compat.bytes_to_str(out)
+    return py3compat.decode(out)
 
 try:
     CommandLineToArgvW = ctypes.windll.shell32.CommandLineToArgvW
@@ -161,13 +161,13 @@ try:
     LocalFree = ctypes.windll.kernel32.LocalFree
     LocalFree.res_type = HLOCAL
     LocalFree.arg_types = [HLOCAL]
-    
+
     def arg_split(commandline, posix=False, strict=True):
         """Split a command line's arguments in a shell-like manner.
 
         This is a special version for windows that use a ctypes call to CommandLineToArgvW
         to do the argv splitting. The posix paramter is ignored.
-        
+
         If strict=False, process_common.arg_split(...strict=False) is used instead.
         """
         #CommandLineToArgvW returns path to executable if called with empty string.

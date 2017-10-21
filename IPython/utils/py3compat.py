@@ -71,8 +71,6 @@ def input(prompt=''):
 builtin_mod_name = "builtins"
 import builtins as builtin_mod
 
-str_to_bytes = encode
-bytes_to_str = decode
 cast_unicode_py2 = no_code
 
 string_types = (str,)
@@ -83,6 +81,13 @@ which = shutil.which
 def iteritems(d): return iter(d.items())
 def itervalues(d): return iter(d.values())
 getcwd = os.getcwd
+
+
+def execfile(fname, glob, loc=None, compiler=None):
+    loc = loc if (loc is not None) else glob
+    with open(fname, 'rb') as f:
+        compiler = compiler or compile
+        exec(compiler(f.read(), fname, 'exec'), glob, loc)
 
 
 # Refactor print statements in doctests.

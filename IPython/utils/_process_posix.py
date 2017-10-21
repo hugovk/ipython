@@ -36,7 +36,7 @@ def _find_cmd(cmd):
 
     path = sp.Popen(['/usr/bin/env', 'which', cmd],
                     stdout=sp.PIPE, stderr=sp.PIPE).communicate()[0]
-    return py3compat.bytes_to_str(path)
+    return py3compat.decode(path)
 
 
 class ProcessHandler(object):
@@ -59,11 +59,11 @@ class ProcessHandler(object):
 
     @property
     def sh(self):
-        if self._sh is None:        
+        if self._sh is None:
             self._sh = pexpect.which('sh')
             if self._sh is None:
                 raise OSError('"sh" shell not found')
-        
+
         return self._sh
 
     def __init__(self, logfile=None, read_timeout=None, terminate_timeout=None):
@@ -131,7 +131,7 @@ class ProcessHandler(object):
         """
         # Get likely encoding for the output.
         enc = DEFAULT_ENCODING
-        
+
         # Patterns to match on the output, for pexpect.  We read input and
         # allow either a short timeout or EOF
         patterns = [pexpect.TIMEOUT, pexpect.EOF]
