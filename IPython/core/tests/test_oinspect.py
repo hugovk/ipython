@@ -22,7 +22,6 @@ from IPython import get_ipython
 from IPython.testing.decorators import skipif
 from IPython.testing.tools import AssertPrints, AssertNotPrints
 from IPython.utils.path import compress_user
-from IPython.utils import py3compat
 
 
 #-----------------------------------------------------------------------------
@@ -47,7 +46,7 @@ from unittest import TestCase
 class Test(TestCase):
 
     def test_find_source_lines(self):
-        self.assertEqual(oinspect.find_source_lines(Test.test_find_source_lines), 
+        self.assertEqual(oinspect.find_source_lines(Test.test_find_source_lines),
                     THIS_LINE_NUMBER+6)
 
 
@@ -76,7 +75,7 @@ def test_find_file_decorated1():
     @noop1
     def f(x):
         "My docstring"
-    
+
     match_pyfiles(oinspect.find_file(f), os.path.abspath(__file__))
     nt.assert_equal(f.__doc__, "My docstring")
 
@@ -92,10 +91,10 @@ def test_find_file_decorated2():
     @noop2
     def f(x):
         "My docstring 2"
-    
+
     match_pyfiles(oinspect.find_file(f), os.path.abspath(__file__))
     nt.assert_equal(f.__doc__, "My docstring 2")
-    
+
 
 def test_find_file_magic():
     run = ip.find_line_magic('run')
@@ -162,11 +161,11 @@ class SimpleMagics(Magics):
     @line_magic
     def Clmagic(self, cline):
         "A class-based line magic"
-        
+
     @cell_magic
     def Ccmagic(self, cline, ccell):
         "A class-based cell magic"
-        
+
     @line_cell_magic
     def Clcmagic(self, cline, ccell=None):
         "A class-based line/cell magic"
@@ -286,16 +285,16 @@ def test_getdoc():
         """standard docstring"""
         def getdoc(self):
             return "custom docstring"
-    
+
     class C(object):
         """standard docstring"""
         def getdoc(self):
             return None
-    
+
     a = A()
     b = B()
     c = C()
-    
+
     nt.assert_equal(oinspect.getdoc(a), "standard docstring")
     nt.assert_equal(oinspect.getdoc(b), "custom docstring")
     nt.assert_equal(oinspect.getdoc(c), "standard docstring")
@@ -391,11 +390,11 @@ def test_pinfo_docstring_if_detail_and_no_source():
                   def bar(self):
                       """ This is a docstring for Foo.bar """
                       pass
-              ''' 
-    
+              '''
+
     ip.run_cell(obj_def)
     ip.run_cell('foo = Foo()')
-    
+
     with AssertNotPrints("Source:"):
         with AssertPrints('Docstring:'):
             ip._inspect('pinfo', 'foo', detail_level=0)
