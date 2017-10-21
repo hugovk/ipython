@@ -35,7 +35,7 @@ import warnings
 
 from IPython import get_ipython
 from IPython.utils import PyColorize
-from IPython.utils import coloransi, py3compat
+from IPython.utils import coloransi
 from IPython.core.excolors import exception_colors
 from IPython.testing.skipdoctest import skip_doctest
 

@@ -118,7 +118,6 @@ from IPython.core.excolors import exception_colors
 from IPython.utils import PyColorize
 from IPython.utils import openpy
 from IPython.utils import path as util_path
-from IPython.utils import py3compat
 from IPython.utils.data import uniq_stable
 from IPython.utils.terminal import get_terminal_size
 from logging import info, error, debug

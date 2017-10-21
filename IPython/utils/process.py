@@ -19,7 +19,6 @@ else:
     from ._process_posix import system, getoutput, arg_split, check_pid
 
 from ._process_common import getoutputerror, get_output_error_code, process_handler
-from . import py3compat
 
 
 class FindCmdError(Exception):

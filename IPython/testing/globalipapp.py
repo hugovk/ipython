@@ -18,7 +18,6 @@ from . import tools
 
 from IPython.core import page
 from IPython.utils import io
-from IPython.utils import py3compat
 from IPython.terminal.interactiveshell import TerminalInteractiveShell
 
 
