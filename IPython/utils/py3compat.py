@@ -1,20 +1,16 @@
 # coding: utf-8
 """Compatibility tricks for Python 3. Mainly to do with unicode."""
 import functools
-import os
-import sys
 import re
-import shutil
 import platform
 
 from .encoding import DEFAULT_ENCODING
 
-def no_code(x, encoding=None):
-    return x
 
 def decode(s, encoding=None):
     encoding = encoding or DEFAULT_ENCODING
     return s.decode(encoding, "replace")
+
 
 def encode(u, encoding=None):
     encoding = encoding or DEFAULT_ENCODING
@@ -24,20 +20,23 @@ def encode(u, encoding=None):
 def cast_unicode(s, encoding=None):
     return s
 
+
 def cast_bytes(s, encoding=None):
     return encode(s, encoding)
+
 
 def _modify_str_or_docstring(str_change_func):
     @functools.wraps(str_change_func)
     def wrapper(func_or_str):
-        if isinstance(func_or_str, string_types):
+        if isinstance(func_or_str, (str,)):
             func = None
             doc = func_or_str
         else:
             func = func_or_str
             doc = func.__doc__
 
-        # PYTHONOPTIMIZE=2 strips docstrings, so they can disappear unexpectedly
+        # PYTHONOPTIMIZE=2 strips docstrings,
+        # so they can disappear unexpectedly
         if doc is not None:
             doc = str_change_func(doc)
 
@@ -46,6 +45,7 @@ def _modify_str_or_docstring(str_change_func):
             return func
         return doc
     return wrapper
+
 
 def safe_unicode(e):
     """unicode(e) with various fallbacks. Used for exceptions, which may not be
@@ -71,17 +71,6 @@ def input(prompt=''):
 builtin_mod_name = "builtins"
 import builtins as builtin_mod
 
-cast_unicode_py2 = no_code
-
-string_types = (str,)
-
-which = shutil.which
-
-
-def iteritems(d): return iter(d.items())
-def itervalues(d): return iter(d.values())
-getcwd = os.getcwd
-
 
 def execfile(fname, glob, loc=None, compiler=None):
     loc = loc if (loc is not None) else glob
@@ -96,6 +85,7 @@ def _print_statement_sub(match):
     expr = match.groups('expr')
     return "print(%s)" % expr
 
+
 @_modify_str_or_docstring
 def doctest_refactor_print(doc):
     """Refactor 'print x' statements in a doctest to print(x) style. 2to3
@@ -103,6 +93,7 @@ def doctest_refactor_print(doc):
 
     Can accept a string or a function, so it can be used as a decorator."""
     return _print_statement_re.sub(_print_statement_sub, doc)
+
 
 # Abstract u'abc' syntax:
 @_modify_str_or_docstring
@@ -112,5 +103,5 @@ def u_format(s):
     Accepts a string or a function, so it can be used as a decorator."""
     return s.format(u='')
 
-PYPY = platform.python_implementation() == "PyPy"
 
+PYPY = platform.python_implementation() == "PyPy"
