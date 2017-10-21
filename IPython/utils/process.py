@@ -8,6 +8,7 @@ Utilities for working with external processes.
 
 
 import os
+import shutil
 import sys
 
 if sys.platform == 'win32':
@@ -44,7 +45,7 @@ def find_cmd(cmd):
     cmd : str
         The command line program to look for.
     """
-    path = py3compat.which(cmd)
+    path = shutil.which(cmd)
     if path is None:
         raise FindCmdError('command could not be found: %s' % cmd)
     return path
