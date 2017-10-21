@@ -11,6 +11,7 @@ done.
 
 import builtins as builtin_mod
 import sys
+import types
 import warnings
 
 from . import tools
@@ -104,9 +105,9 @@ def start_ipython():
     # Modify the IPython system call with one that uses getoutput, so that we
     # can capture subcommands and print them to Python's stdout, otherwise the
     # doctest machinery would miss them.
-    shell.system = py3compat.MethodType(xsys, shell)
-    
-    shell._showtraceback = py3compat.MethodType(_showtraceback, shell)
+    shell.system = types.MethodType(xsys, shell)
+
+    shell._showtraceback = types.MethodType(_showtraceback, shell)
 
     # IPython is ready, now clean up some global state...
 
@@ -129,7 +130,7 @@ def start_ipython():
         if isinstance(strng, dict):
            strng = strng.get('text/plain', '')
         print(strng)
-    
+
     page.orig_page = page.pager_page
     page.pager_page = nopage
 

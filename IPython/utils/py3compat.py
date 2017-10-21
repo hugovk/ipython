@@ -5,7 +5,6 @@ import os
 import sys
 import re
 import shutil
-import types
 import platform
 
 from .encoding import DEFAULT_ENCODING
@@ -170,7 +169,6 @@ def iteritems(d): return iter(d.items())
 def itervalues(d): return iter(d.values())
 getcwd = os.getcwd
 
-MethodType = types.MethodType
 
 def execfile(fname, glob, loc=None, compiler=None):
     loc = loc if (loc is not None) else glob
@@ -200,48 +198,5 @@ def u_format(s):
     Accepts a string or a function, so it can be used as a decorator."""
     return s.format(u='')
 
-def get_closure(f):
-    """Get a function's closure attribute"""
-    return f.__closure__
-
 PYPY = platform.python_implementation() == "PyPy"
 
-
-def annotate(**kwargs):
-    """Python 3 compatible function annotation for Python 2."""
-    if not kwargs:
-        raise ValueError('annotations must be provided as keyword arguments')
-    def dec(f):
-        if hasattr(f, '__annotations__'):
-            for k, v in kwargs.items():
-                f.__annotations__[k] = v
-        else:
-            f.__annotations__ = kwargs
-        return f
-    return dec
-
-
-# Parts below taken from six:
-# Copyright (c) 2010-2013 Benjamin Peterson
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
-def with_metaclass(meta, *bases):
-    """Create a base class with a metaclass."""
-    return meta("_NewBase", bases, {})
