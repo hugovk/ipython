@@ -17,10 +17,6 @@ def encode(u, encoding=None):
     return u.encode(encoding, "replace")
 
 
-def cast_bytes(s, encoding=None):
-    return encode(s, encoding)
-
-
 def _modify_str_or_docstring(str_change_func):
     @functools.wraps(str_change_func)
     def wrapper(func_or_str):
